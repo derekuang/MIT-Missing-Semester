@@ -55,7 +55,7 @@ Shell会使用UNIX提供的信号机制来执行进程间通信。
     - " 水平分割
     - % 垂直分割
     - <方向键> 切换到指定方向面板
-    - z 切换当前面板缩放
+    - z (zoom)切换当前面板缩放
     - [ 往回卷动屏幕
     - <空格> 在不同面板排布切换
 
@@ -64,3 +64,59 @@ Shell会使用UNIX提供的信号机制来执行进程间通信。
 
 `screen` 大多数UNIX系统中都默认安装的终端多路复用器
 
+
+
+## 三、别名
+
+```shell
+alias alias_name="command_to_alias arg1 arg2"
+```
+
+正常情况下，我们需要把别名配置放在shell启动文件中，如`.bashrc`
+
+
+
+## 四、配置文件（点文件）
+
+[shell启动脚本配置]: https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html
+
+对bash来说，可以通过`.bashrc`或`.bash_profile`来进行配置启动脚本
+
+管理配置文件的正确姿势：它们应该集中放在点文件的文件夹下，并使用版本控制系统进行管理，然后通过脚本将其 **符号链接** 到需要的地方。（对于可移植性需求，可以用if语句根据不同设备编写不同的配置）
+
+
+
+## 五、远端设备
+
+当我们需要使用远程服务器提供服务时，就需要使用`SSH`（安全shell）
+
+```shell
+ssh user@remote
+```
+
+- 执行命令
+
+  ssh可以直接远程执行命令，如：`ssh user@remote ls /`
+
+- SSH密钥
+
+  公钥验证机制，向服务端证明客户端持有对应私钥即可验证，省去密码验证中每次都需要输入密码的麻烦。可以理解为，私钥=密码。
+
+  - 密钥生成 `ssh-keygen`
+
+  - 基于密钥的认证机制
+
+    ssh会查询`.ssh/authorized_keys`（存放着公钥）来确认哪些用户允许被登录
+
+    ```shell
+    cat .ssh/id_ed25519.pub | \
+    ssh user@remote 'cat >> ~/.ssh/authorized_keys'
+    ```
+
+    如果支持`ssh-copy-id-i`，可以使用下面的方案
+
+    ```shell
+    ssh-copy-id -i .ssh/id_ed25519.pub user@remote
+    ```
+
+    
